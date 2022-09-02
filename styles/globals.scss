@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    input[type=range] {
+        @apply appearance-none my-2 w-full
+    }
+
+    input[type=range]:focus {
+        @apply outline-none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 5px;
+        cursor: pointer;
+        animate: 0.2s;
+        box-shadow: 0px 0px 0px #000000;
+        background: #DADCE0;
+        border-radius: 1px;
+        border: 0px solid #000000;
+        @apply w-full h-[5px] cursor-pointer duration-200 bg-slate-300 rounded-sm border border-transparent
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        height: 18px;
+        width: 18px;
+        border-radius: 25px;
+        background: #ffffff;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -7px;
+        border: 1px solid #bdbdbd;
+        @apply shadow-md;
+    }
+
+    input[type=range]:focus::-webkit-slider-runnable-track {
+        background: #DADCE0;
+    }
+
+    input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 5px;
+        cursor: pointer;
+        animate: 0.2s;
+        box-shadow: 0px 0px 0px #000000;
+        background: #2497E3;
+        border-radius: 1px;
+        border: 0px solid #000000;
+    }
+
+    input[type=range]::-moz-range-thumb {
+        box-shadow: 0px 0px 0px #000000;
+        height: 18px;
+        width: 18px;
+        border-radius: 25px;
+        background: #ffffff;
+        cursor: pointer;
+    }
+
+    input[type=range]::-ms-track {
+        width: 100%;
+        height: 5px;
+        cursor: pointer;
+        animate: 0.2s;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+    }
+
+    input[type=range]::-ms-fill-lower {
+        background: #2497E3;
+        border: 0px solid #000000;
+        border-radius: 2px;
+        box-shadow: 0px 0px 0px #000000;
+    }
+
+    input[type=range]::-ms-fill-upper {
+        background: #2497E3;
+        border: 0px solid #000000;
+        border-radius: 2px;
+        box-shadow: 0px 0px 0px #000000;
+    }
+
+    input[type=range]::-ms-thumb {
+        margin-top: 1px;
+        box-shadow: 0px 0px 0px #000000;
+        border: 1px solid #2497E3;
+        height: 18px;
+        width: 18px;
+        border-radius: 25px;
+        background: #dcdcdc;
+        cursor: pointer;
+    }
+
+    input[type=range]:focus::-ms-fill-lower {
+        background: #2497E3;
+    }
+
+    input[type=range]:focus::-ms-fill-upper {
+        background: #2497E3;
+    }
+
+}
