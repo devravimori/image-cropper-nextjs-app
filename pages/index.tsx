@@ -6,34 +6,46 @@ import { useCallback, useRef, useState } from 'react'
 import Cropper, { Area } from 'react-easy-crop';
 import Modal from '../components/Modal'
 
+type crop = {
+  x: number;
+  y: number;
+  width:number;
+  height:number;
+}
+
+interface cropAndOriginalImage{
+  crop: string;
+  original: HTMLImageElement;
+}
+
 const Home: NextPage = () => {
 
   const imageRef = useRef<HTMLInputElement>(null)
-  const [imageSrc, setImageSrc] = useState(null)
-  const [isLoading, setLoading] = useState(false)
-  const [crop, setCrop] = useState({ x: 0, y: 0, width: 500, height: 500 })
-  const [cropFinal, setCropFinal] = useState({ x: 0, y: 0, width: 0, height: 0 })
-  const [zoom, setZoom] = useState(1.0)
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [imageObj, setImageObj]: any = useState({});
+  const [imageSrc, setImageSrc] = useState<string | null>('')
+  const [isLoading, setLoading] = useState<boolean>(false)
+  const [crop, setCrop] = useState<crop>({ x: 0, y: 0, width: 500, height: 500 })
+  const [cropFinal, setCropFinal] = useState<crop>({ x: 0, y: 0, width: 0, height: 0 })
+  const [zoom, setZoom] = useState<number>(1.0)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [imageObj, setImageObj] = useState<cropAndOriginalImage>({} as cropAndOriginalImage);
 
 
-  const onFileChange = async (event: any) => {
-    if (event.target.files && event.target.files.length > 0) {
+  const onFileChange = async (event: React.FormEvent<HTMLInputElement>) => {
+    if (event.currentTarget.files && event.currentTarget.files.length > 0) {
       setZoom(1.0)
       setCrop({ x: 0, y: 0, width: 500, height: 500 })
-      var file = event.target.files[0];
+      var file = event.currentTarget.files[0];
       var reader = new FileReader();
       reader.onload = function (e: any) {
         setImageSrc(e.target.result)
       }
       reader.readAsDataURL(file);
-      event.target.value = null;
+      event.currentTarget.value = '';
     }
   }
 
-  const hendleZoom = (event: any) => {
-    setZoom(parseFloat(parseFloat(event.target.value).toFixed(1)))
+  const hendleZoom = (event: React.FormEvent<HTMLInputElement>) => {
+    setZoom(parseFloat(parseFloat(event.currentTarget.value).toFixed(1)))
   }
   const increment = () => {
     setZoom((zoom) => parseFloat((parseFloat(zoom.toFixed(1)) + .1).toFixed(1)))
@@ -43,11 +55,11 @@ const Home: NextPage = () => {
     setZoom((zoom) => parseFloat((parseFloat(zoom.toFixed(1)) - .1).toFixed(1)))
   }
 
-  const onCropChange = useCallback((crop: any) => {
+  const onCropChange = useCallback((crop: crop) => {
     setCrop(crop)
   }, [])
 
-  const onZoomChange = useCallback((zoom: any) => {
+  const onZoomChange = useCallback((zoom: number) => {
     setZoom(zoom)
   }, [])
 
@@ -57,21 +69,26 @@ const Home: NextPage = () => {
 
   const getCroppedImg = async () => {
     setLoading(true)
-    let { crop, original } = await new Promise(async (resolve, rejects) => {
-      const canvas = document.createElement("canvas");
+    let { crop, original }: cropAndOriginalImage = await new Promise(async (resolve) => {
+
+      const canvas: HTMLCanvasElement = document.createElement("canvas");
+
       canvas.width = cropFinal.width;
       canvas.height = cropFinal.height;
-      const ctx: any = canvas.getContext("2d");
-      var img: any = document.createElement("img");
-      img.src = imageSrc
+      
+      const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+
+      var img: HTMLImageElement = document.createElement("img");
+
+      img.src = imageSrc || '';
 
       // New lines to be added
       const pixelRatio = window.devicePixelRatio;
       canvas.width = cropFinal.width * pixelRatio;
       canvas.height = cropFinal.height * pixelRatio;
-      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(
+      ctx?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      // ctx?.imageSmoothingQuality && ctx.imageSmoothingQuality = "high";
+      ctx?.drawImage(
         img,
         cropFinal.x,
         cropFinal.y,
@@ -83,13 +100,13 @@ const Home: NextPage = () => {
         cropFinal.height
       );
 
-      let canvasData = await new Promise((resolve, reject) => {
+      let canvasData: string = await new Promise((resolve) => {
         canvas.toBlob((file: any) => {
           resolve(URL.createObjectURL(file))
         }, 'image/jpeg')
       })
 
-      resolve({ crop: canvasData, original: img })
+      resolve({crop: canvasData, original: img })
     })
     setImageObj({ original, crop })
     setIsModalOpen(true);

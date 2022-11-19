@@ -1,14 +1,14 @@
 import React, { memo} from "react";
 import Img from 'next/image'
-type Props = {
+type IProps = {
     image: {
-        original: { src: '' },
-        crop: '',
+        original: { src: string },
+        crop: string,
     },
     show: Boolean,
     closeModal: () => void
 }
-const Modal = (props: Props) => {
+const Modal = (props: IProps) => {
 
     return (
         <>
